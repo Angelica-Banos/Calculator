@@ -289,18 +289,21 @@ public class CalculatorFrame extends javax.swing.JFrame {
 
     private void btnDivideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDivideActionPerformed
         // TODO add your handling code here:
-        try {
-            Calculator calculator = new Calculator();
+       Response response = Calculator.divide(txtNum1.getText(), txtNum2.getText());
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+            txtNum1.setText("");
+            txtNum2.setText("");
+            txtResult.setText("");
 
-            double number1 = Double.parseDouble(txtNum1.getText());
-            double number2 = Double.parseDouble(txtNum2.getText());
-            double result = calculator.divide(number1, number2);
-
-            this.history.addOperation(new Operation(number1, number2, "/", result));
-
-            txtResult.setText("" + result);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+            txtNum1.setText("");
+            txtNum2.setText("");
+            txtResult.setText("");
+        } else {
+            txtResult.setText(Calculator.getResult());
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnDivideActionPerformed
 
